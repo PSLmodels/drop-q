@@ -1,0 +1,2 @@
+include versioneer.py
+include dropq/_version.py
