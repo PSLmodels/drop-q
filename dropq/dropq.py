@@ -274,8 +274,6 @@ def run_nth_year_mtr_calc(year_n, start_year, tax_dta, user_mods="", return_json
 
     elasticity_gdp = elasticity_of_gdp_year_n(user_mods, year_n)
 
-    # handle type changes for jitting
-    cast_to_double(tax_dta)
 
     #########################################################################
     #   Create Calculators and Masks
@@ -360,8 +358,6 @@ def run_nth_year_mtr_calc(year_n, start_year, tax_dta, user_mods="", return_json
 
 def run_nth_year(year_n, start_year, tax_dta="", user_mods="", return_json=True):
 
-    # handle type changes for jitting
-    cast_to_double(tax_dta)
 
     #########################################################################
     #   Create Calculators and Masks
@@ -436,7 +432,7 @@ def run_nth_year(year_n, start_year, tax_dta="", user_mods="", return_json=True)
 
     calc1.calc_all()
     has_behavior = (calc3.behavior.BE_sub or calc3.behavior.BE_inc or
-                    calc3.behavior.BE_CG_per)
+                    calc3.behavior.BE_cg)
     if has_behavior:
         calc3 = taxcalc.behavior(calc1, calc3)
     else:
@@ -527,8 +523,6 @@ def run_nth_year(year_n, start_year, tax_dta="", user_mods="", return_json=True)
 
 def run_models(tax_dta, start_year, user_mods="", num_years=NUM_YEARS_DEFAULT):
 
-    # handle type changes for jitting
-    cast_to_double(tax_dta)
     mY_dec_table = {}
     mX_dec_table = {}
     df_dec_table = {}
@@ -568,8 +562,6 @@ def run_models(tax_dta, start_year, user_mods="", num_years=NUM_YEARS_DEFAULT):
 
 def run_gdp_elast_models(tax_dta, start_year, user_mods="", num_years=NUM_YEARS_DEFAULT):
 
-    # handle type changes for jitting
-    cast_to_double(tax_dta)
     gdp_elasticity_totals = []
 
     #########################################################################
