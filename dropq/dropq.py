@@ -431,9 +431,7 @@ def run_nth_year(year_n, start_year, tax_dta="", user_mods="", return_json=True)
         calc3.increment_year()
 
     calc1.calc_all()
-    has_behavior = (calc3.behavior.BE_sub or calc3.behavior.BE_inc or
-                    calc3.behavior.BE_cg)
-    if has_behavior:
+    if calc3.behavior.has_response():
         calc3 = calc3.behavior.response(calc1, calc3)
     else:
         calc3.calc_all()
