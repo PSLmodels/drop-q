@@ -2,6 +2,7 @@ from __future__ import print_function
 from taxcalc import (Calculator, Records, Policy, Behavior,
                      TABLE_LABELS, TABLE_COLUMNS, STATS_COLUMNS,
                      DIFF_TABLE_LABELS)
+import btax
 import taxcalc
 import numpy as np
 from pandas import DataFrame
@@ -539,7 +540,7 @@ def run_models(tax_dta, start_year, user_mods="", num_years=NUM_YEARS_DEFAULT):
     for year_n in range(0, num_years):
         json_tables = run_nth_year(year_n, tax_dta=tax_dta,
                                    user_mods=user_mods, start_year=start_year)
-        (mY_dec_table_i, mX_dec_table_i, df_dec_table_i, pdf_dec_table_i, 
+        (mY_dec_table_i, mX_dec_table_i, df_dec_table_i, pdf_dec_table_i,
          cdf_dec_table_i, mY_bin_table_i, mX_bin_table_i, df_bin_table_i,
          pdf_bin_table_i, cdf_bin_table_i, num_fiscal_year_total) = json_tables
 
@@ -609,3 +610,8 @@ def format_macro_results(diff_data, return_json=True):
                                  num_decimals=3)
 
     return df_ogusa_table
+
+
+def run_btax_sync(user_mods):
+    return {'a': list(range(5))}
+
