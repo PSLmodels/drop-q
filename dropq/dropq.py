@@ -7,6 +7,7 @@ import numpy as np
 from pandas import DataFrame
 import pandas as pd
 import hashlib
+import copy
 import time
 from .utils import *
 
@@ -363,12 +364,10 @@ def run_nth_year(year_n, start_year, tax_dta="", user_mods="", return_json=True)
     #   Create Calculators and Masks
     #########################################################################
     records = Records(tax_dta.copy(deep=True))
-    records2 = Records(tax_dta.copy(deep=True))
-    records3 = Records(tax_dta.copy(deep=True))
+    records2 = copy.deepcopy(records)
+    records3 = copy.deepcopy(records)
     # add 1 dollar to gross income
     records2.e00200 += 1
-    records2.e02000 += 1
-    records2.e02615 += 1
     # Default Plans
     # Create a default Policy object
     params = Policy(start_year=2013)
@@ -420,6 +419,7 @@ def run_nth_year(year_n, start_year, tax_dta="", user_mods="", return_json=True)
     while calc3.current_year < start_year:
         calc3.increment_year()
     assert calc3.current_year == start_year
+
     calc3.calc_all()
     # Get a random seed based on user specified plan
     seed = random_seed_from_plan(calc3)
