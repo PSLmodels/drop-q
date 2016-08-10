@@ -432,7 +432,7 @@ def run_nth_year(year_n, start_year, tax_dta="", user_mods="", return_json=True)
 
     calc1.calc_all()
     if calc3.behavior.has_response():
-        calc3 = calc3.behavior.response(calc1, calc3)
+        calc3 = Behavior.response(calc1, calc3)
     else:
         calc3.calc_all()
     soit1 = results(calc1)
