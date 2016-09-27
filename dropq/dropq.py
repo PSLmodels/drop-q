@@ -187,15 +187,15 @@ def groupby_means_and_comparisons(df1, df2, mask, debug=False):
     # Negative values are the magnitude of the tax decrease
     df2['tax_diff_dec'] = df2['_iitax_dec'] - df1['_iitax']
     df2['tax_diff_bin'] = df2['_iitax_bin'] - df1['_iitax']
-    df2['fica_diff_dec'] = df2['_fica_dec'] - df1['_fica']
-    df2['fica_diff_bin'] = df2['_fica_bin'] - df1['_fica']
+    df2['payrolltax_diff_dec'] = df2['_payrolltax_dec'] - df1['_payrolltax']
+    df2['payrolltax_diff_bin'] = df2['_payrolltax_bin'] - df1['_payrolltax']
     df2['combined_diff_dec'] = df2['_combined_dec'] - df1['_combined']
     df2['combined_diff_bin'] = df2['_combined_bin'] - df1['_combined']
 
     dec_sum = (df2['tax_diff_dec']*df2['s006']).sum()
     bin_sum = (df2['tax_diff_bin']*df2['s006']).sum()
-    fica_dec_sum = (df2['fica_diff_dec']*df2['s006']).sum()
-    fica_bin_sum = (df2['fica_diff_bin']*df2['s006']).sum()
+    payrolltax_dec_sum = (df2['payrolltax_diff_dec']*df2['s006']).sum()
+    payrolltax_bin_sum = (df2['payrolltax_diff_bin']*df2['s006']).sum()
     combined_dec_sum = (df2['combined_diff_dec']*df2['s006']).sum()
     combined_bin_sum = (df2['combined_diff_bin']*df2['s006']).sum()
 
@@ -214,17 +214,17 @@ def groupby_means_and_comparisons(df1, df2, mask, debug=False):
                                               diff_col='_iitax',
                                               suffix="_bin", wsum=bin_sum)
 
-    payroll_diffs_dec = create_dropq_difference_table(df1, df2,
+    payrolltax_diffs_dec = create_dropq_difference_table(df1, df2,
                                               groupby="weighted_deciles",
-                                              res_col='fica_diff',
-                                              diff_col='_fica',
-                                              suffix="_dec", wsum=fica_dec_sum)
+                                              res_col='payrolltax_diff',
+                                              diff_col='_payrolltax',
+                                              suffix="_dec", wsum=payrolltax_dec_sum)
 
-    payroll_diffs_bin = create_dropq_difference_table(df1, df2,
+    payrolltax_diffs_bin = create_dropq_difference_table(df1, df2,
                                               groupby="webapp_income_bins",
-                                              res_col='fica_diff',
-                                              diff_col='_fica',
-                                              suffix="_bin", wsum=fica_bin_sum)
+                                              res_col='payrolltax_diff',
+                                              diff_col='_payrolltax',
+                                              suffix="_bin", wsum=payrolltax_bin_sum)
 
     comb_diffs_dec = create_dropq_difference_table(df1, df2,
                                               groupby="weighted_deciles",
@@ -251,9 +251,9 @@ def groupby_means_and_comparisons(df1, df2, mask, debug=False):
                                        result_type='weighted_sum', suffix='_bin')
 
 
-    return (mY_dec, mX_dec, diffs_dec, payroll_diffs_dec, comb_diffs_dec,
-            mY_bin, mX_bin, diffs_bin, payroll_diffs_bin, comb_diffs_bin,
-            dec_sum, fica_dec_sum, combined_dec_sum)
+    return (mY_dec, mX_dec, diffs_dec, payrolltax_diffs_dec, comb_diffs_dec,
+            mY_bin, mX_bin, diffs_bin, payrolltax_diffs_bin, comb_diffs_bin,
+            dec_sum, payrolltax_dec_sum, combined_dec_sum)
 
 
 
@@ -442,7 +442,7 @@ def run_nth_year(year_n, start_year, tax_dta="", user_mods="", return_json=True)
     # Means of plan Y by income bin
     # diffs of plan Y by income bin
     mY_dec, mX_dec, df_dec, pdf_dec, cdf_dec, mY_bin, mX_bin, df_bin, \
-        pdf_bin, cdf_bin, diff_sum, payroll_diff_sum, combined_diff_sum = \
+        pdf_bin, cdf_bin, diff_sum, payrolltax_diff_sum, combined_diff_sum = \
         groupby_means_and_comparisons(soit1, soit3, mask)
 
     elapsed_time = time.time() - start_time
@@ -450,9 +450,9 @@ def run_nth_year(year_n, start_year, tax_dta="", user_mods="", return_json=True)
     start_year += 1
 
     #num_fiscal_year_total = format_print(diff_sum)
-    #fica_fiscal_year_total = format_print(payroll_diff_sum)
+    #fica_fiscal_year_total = format_print(payrolltax_diff_sum)
     #combined_fiscal_year_total = format_print(combined_diff_sum)
-    tots = [diff_sum, payroll_diff_sum, combined_diff_sum]
+    tots = [diff_sum, payrolltax_diff_sum, combined_diff_sum]
     fiscal_tots= pd.DataFrame(data=tots, index=total_row_names)
 
     # Get rid of negative incomes
