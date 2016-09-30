@@ -84,6 +84,27 @@ def test_only_reform_mods_with_cpi():
     exp = {first_year: {'_FICA_ss_trt': [0.15], '_II_em': [4700.0], '_II_em_cpi': False}}
     assert ans == exp
 
+def test_unknown_parameters_with_cpi():
+    myvars = {}
+    myvars['_FICA_ss_trt'] = [0.15]
+    myvars['_factor_target'] = [0.02]
+    myvars['_II_em'] = [4700.0]
+    # A known CPI flag
+    myvars['_II_em_cpi'] = False
+    # A unknown CPI flag
+    myvars['NOGOOD_cpi'] = False
+    # A small parameter name
+    myvars['NO'] = [0.42]
+    myvars['_BE_inc'] = [0.8]
+    myvars['ELASTICITY_GDP_WRT_AMTR'] = [.54]
+    first_year = 2013
+    user_mods = {first_year: myvars}
+    ans = get_unknown_parameters(user_mods, 2015)
+    exp = set(["NOGOOD_cpi", "NO", "ELASTICITY_GDP_WRT_AMTR"])
+    assert set(ans) == exp
+
+
+
 def test_format_macro_results():
 
     data = [[  1.875e-03,  1.960e-03,  2.069e-03,  2.131e-03,  2.179e-03,  2.226e-03,
