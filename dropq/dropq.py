@@ -81,6 +81,32 @@ def only_reform_mods(user_mods, start_year):
             pol_refs[year] = {param:reforms[param] for param in pols}
     return pol_refs
 
+def get_unknown_parameters(user_mods, start_year):
+    """
+    Extract parameters that are just for policy reforms
+    """
+    pol_refs = {}
+    beh_dd = Behavior.default_data(start_year=start_year)
+    growth_dd = taxcalc.growth.Growth.default_data(start_year=start_year)
+    policy_dd = taxcalc.policy.Policy.default_data(start_year=start_year)
+    unknown_params = []
+    for year, reforms in user_mods.items():
+        everything = set(reforms.keys())
+        all_cpis = {p for p in reforms.keys() if p.endswith("_cpi")}
+        all_good_cpis = {p for p in reforms.keys() if p.endswith("_cpi") and
+                         p[:-4] in policy_dd.keys()}
+        bad_cpis = all_cpis - all_good_cpis
+        remaining = everything - all_cpis
+        if bad_cpis:
+            unknown_params += list(bad_cpis)
+        pols = (remaining - set(beh_dd.keys()) - set(growth_dd.keys()) -
+                set(policy_dd.keys()))
+        if pols:
+            unknown_params += list(pols)
+
+    return unknown_params
+
+
 def elasticity_of_gdp_year_n(user_mods, year_n):
     """
     Extract elasticity of GDP parameter for the proper year
@@ -357,7 +383,7 @@ def run_nth_year_mtr_calc(year_n, start_year, tax_dta, user_mods="", return_json
     return gdp_elast_total
 
 
-def run_nth_year(year_n, start_year, tax_dta="", user_mods="", return_json=True):
+def run_nth_year(year_n, start_year, is_strict, tax_dta="", user_mods="", return_json=True):
 
 
     #########################################################################
@@ -373,6 +399,11 @@ def run_nth_year(year_n, start_year, tax_dta="", user_mods="", return_json=True)
     params = Policy(start_year=2013)
     # Create a Calculator
     calc1 = Calculator(policy=params, records=records)
+
+    if is_strict:
+        unknown_params = get_unknown_parameters(user_mods, start_year)
+        if unknown_params:
+            raise ValueError("Unknown parameters: {}".format(unknown_params))
 
     growth_assumptions = only_growth_assumptions(user_mods, start_year)
     if growth_assumptions:
