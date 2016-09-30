@@ -383,7 +383,7 @@ def run_nth_year_mtr_calc(year_n, start_year, tax_dta, user_mods="", return_json
     return gdp_elast_total
 
 
-def run_nth_year(year_n, start_year, tax_dta="", user_mods="", return_json=True, is_strict=True):
+def run_nth_year(year_n, start_year, is_strict, tax_dta="", user_mods="", return_json=True):
 
 
     #########################################################################
