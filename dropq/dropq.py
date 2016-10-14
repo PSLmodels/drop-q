@@ -112,14 +112,17 @@ def elasticity_of_gdp_year_n(user_mods, year_n):
     Extract elasticity of GDP parameter for the proper year
     """
     allkeys = sorted(user_mods.keys())
-    reforms = user_mods[allkeys[0]]
-    ELASTICITY_LIST = reforms.get("elastic_gdp", None)
-    if not ELASTICITY_LIST:
+    all_elast_params = []
+    for year in user_mods:
+        reform = user_mods[year]
+        all_elast_params += reform.get("elastic_gdp", [0.0])
+
+    if not all_elast_params:
         raise ValueError("user_mods should specify elastic_gdp")
-    if year_n >= len(ELASTICITY_LIST):
-        return ELASTICITY_LIST[-1]
+    if year_n >= len(all_elast_params):
+        return all_elast_params[-1]
     else:
-        return ELASTICITY_LIST[year_n]
+        return all_elast_params[year_n]
 
 
 def random_seed_from_plan(calc):
@@ -300,7 +303,6 @@ def run_nth_year_mtr_calc(year_n, start_year, tax_dta, user_mods="", return_json
     assert year_n > 0
 
     elasticity_gdp = elasticity_of_gdp_year_n(user_mods, year_n)
-
 
     #########################################################################
     #   Create Calculators and Masks

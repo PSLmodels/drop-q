@@ -143,3 +143,21 @@ def test_format_macro_results():
                          '0.002', '0.002', '0.002', '0.002', '0.003', '0.002']}
 
     assert diff_table == x
+
+
+def test_elasticity_of_gdp_year_n():
+
+    x = {2016: {'_PT_rt7': [0.41], 'elastic_gdp': [0.14, 0.15, 0.16], '_II_rt7': [0.41]}}
+
+    assert elasticity_of_gdp_year_n(x, 0) == 0.14
+    assert elasticity_of_gdp_year_n(x, 1) == 0.15
+    assert elasticity_of_gdp_year_n(x, 2) == 0.16
+    assert elasticity_of_gdp_year_n(x, 3) == 0.16
+
+def test_elasticity_of_gdp_year_n_multiple_year_keys():
+
+    x = {2016: {'_PT_rt7': [0.41], '_II_rt7': [0.41]}, 2017: {'elastic_gdp': [0.15]} }
+    assert elasticity_of_gdp_year_n(x, 0) == 0.
+    assert elasticity_of_gdp_year_n(x, 1) == 0.15
+    assert elasticity_of_gdp_year_n(x, 2) == 0.15
+    assert elasticity_of_gdp_year_n(x, 3) == 0.15
